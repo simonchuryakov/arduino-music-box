@@ -1,0 +1,28 @@
+{
+  "name": "arduino-music-box",
+  "version": "0.0.1",
+  "type": "module",
+  "description": "",
+  "main": "src/node/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/simonchuryakov/arduino-music-box.git"
+  },
+  "author": "Simon Churyakov",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/simonchuryakov/arduino-music-box/issues"
+  },
+  "homepage": "https://github.com/simonchuryakov/arduino-music-box#readme",
+  "dependencies": {
+    "@tonejs/midi": "2.0.23",
+    "lodash": "4.17.19",
+    "serialport": "9.0.0"
+  },
+  "devDependencies": {
+    "dotenv": "8.2.0"
+  }
+}
