@@ -27,6 +27,11 @@ void playNote()
     long frequency = frequencyStr.toInt();
     float duration = durationStr.toFloat();
 
+    if (frequency == -1)
+    {
+        delay(duration);
+    }
+
     if (frequency < 15 || duration == 0)
     {
         return;

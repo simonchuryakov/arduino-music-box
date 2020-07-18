@@ -10,8 +10,11 @@ const toNotes = (track) => {
     (notes) => notes[0]
   );
 
+  let previousTime = 0;
+  let previousNoteDuration = 0;
+
   return mainThemeNotes.reduce(
-    (arduinoData, { pitch, octave, duration, name }, idx) => {
+    (arduinoData, { pitch, octave, duration, name, time }, idx) => {
       let compoundName = "";
 
       if (pitch !== undefined && octave !== undefined) {
@@ -26,10 +29,19 @@ const toNotes = (track) => {
         throw new Error(`Not enough info to play note ${idx}`);
       }
 
+      if (previousTime + previousNoteDuration < time) {
+        arduinoData.push([
+          -1,
+          Math.round((time - previousTime - previousNoteDuration) * 1000),
+        ]);
+      }
+
       const frequency = getNoteFrequency(compoundName);
       const durationMs = Math.round(duration * 1000);
 
       arduinoData.push([frequency, durationMs]);
+      previousTime = time;
+      previousNoteDuration = duration;
 
       return arduinoData;
     },
@@ -37,11 +49,18 @@ const toNotes = (track) => {
   );
 };
 
-export const parse = (midiFilePath, mainTrackIdx = 0) => {
+export const parse = (
+  midiFilePath,
+  mainTrackIdx = 0,
+  shouldGenerateJson = false
+) => {
   const midiData = fs.readFileSync(midiFilePath);
   const midi = new Midi.Midi(midiData);
-  fs.writeFileSync(midiFilePath + ".json", JSON.stringify(midi));
   const notes = toNotes(midi.tracks[mainTrackIdx]);
+
+  if (shouldGenerateJson) {
+    fs.writeFileSync(midiFilePath + ".json", JSON.stringify(midi));
+  }
 
   return _chunk(notes, 5).map((notes) =>
     notes.reduce(
