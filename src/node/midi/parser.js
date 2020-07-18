@@ -3,7 +3,13 @@ import Midi from "@tonejs/midi";
 import _groupBy from "lodash/groupBy.js";
 import _chunk from "lodash/chunk.js";
 
-import { getNoteFrequency } from "../helper.js";
+import { getFrequencyByNote, toMs } from "./helper.js";
+
+const SEPARATOR = ",";
+const NOTE_SEPARATOR = ";";
+const NOTES_CHUNK_SIZE = 5;
+const MIN_NOTE_NAME_LENGTH = 2;
+const MIDI_META_FILE_EXTENSION = ".json";
 
 const toNotes = (track) => {
   const mainThemeNotes = Object.values(_groupBy(track.notes, "time")).map(
@@ -14,14 +20,14 @@ const toNotes = (track) => {
   let previousNoteDuration = 0;
 
   return mainThemeNotes.reduce(
-    (arduinoData, { pitch, octave, duration, name, time }, idx) => {
+    (melody, { pitch, octave, duration, name, time }, idx) => {
       let compoundName = "";
 
       if (pitch !== undefined && octave !== undefined) {
         compoundName = `${pitch}${octave}`;
       }
 
-      if (name !== undefined && name.length >= 2) {
+      if (name !== undefined && name.length >= MIN_NOTE_NAME_LENGTH) {
         compoundName = name;
       }
 
@@ -29,21 +35,19 @@ const toNotes = (track) => {
         throw new Error(`Not enough info to play note ${idx}`);
       }
 
+      // Push the pause in the melody if needed
       if (previousTime + previousNoteDuration < time) {
-        arduinoData.push([
-          -1,
-          Math.round((time - previousTime - previousNoteDuration) * 1000),
-        ]);
+        melody.push([-1, toMs(time - previousTime - previousNoteDuration)]);
       }
 
-      const frequency = getNoteFrequency(compoundName);
-      const durationMs = Math.round(duration * 1000);
+      const frequency = getFrequencyByNote(compoundName);
+      const durationMs = toMs(duration);
 
-      arduinoData.push([frequency, durationMs]);
+      melody.push([frequency, durationMs]);
       previousTime = time;
       previousNoteDuration = duration;
 
-      return arduinoData;
+      return melody;
     },
     []
   );
@@ -52,20 +56,23 @@ const toNotes = (track) => {
 export const parse = (
   midiFilePath,
   mainTrackIdx = 0,
-  shouldGenerateJson = false
+  shouldGenerateMetaFile = false
 ) => {
   const midiData = fs.readFileSync(midiFilePath);
   const midi = new Midi.Midi(midiData);
   const notes = toNotes(midi.tracks[mainTrackIdx]);
 
-  if (shouldGenerateJson) {
-    fs.writeFileSync(midiFilePath + ".json", JSON.stringify(midi));
+  if (shouldGenerateMetaFile) {
+    fs.writeFileSync(
+      `${midiFilePath}${MIDI_META_FILE_EXTENSION}`,
+      JSON.stringify(midi)
+    );
   }
 
-  return _chunk(notes, 5).map((notes) =>
+  return _chunk(notes, NOTES_CHUNK_SIZE).map((notes) =>
     notes.reduce(
       (notesFrame, [frequency, duration]) => {
-        notesFrame.data += `${frequency},${duration};`;
+        notesFrame.data += `${frequency}${SEPARATOR}${duration}${NOTE_SEPARATOR}`;
         notesFrame.wait += duration;
 
         return notesFrame;

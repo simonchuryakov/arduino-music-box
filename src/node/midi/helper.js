@@ -1,5 +1,4 @@
 // lines - octave idx, columns - frequency for concrete note
-
 const OCTAVES = [
   [16, 17, 18, 19, 21, 22, 23, 25, 26, 28, 29, 31],
   [33, 35, 37, 39, 41, 44, 46, 49, 52, 55, 58, 62],
@@ -27,9 +26,8 @@ const noteToIdxDictionary = new Map([
   ["B", 11],
 ]);
 
-export const NOTE_STRUCT_SIZE = 6; // 6 bytes
-
-export const getNoteFrequency = (noteName) => {
+// Note name format is C#4 or D3
+export const getFrequencyByNote = (noteName) => {
   const name = noteName.replace(/[0-9]/, "");
   let octaveIdx = parseInt(noteName.slice(-1), 10);
   const noteIdx = noteToIdxDictionary.get(name);
@@ -37,24 +35,4 @@ export const getNoteFrequency = (noteName) => {
   return OCTAVES[octaveIdx][noteIdx];
 };
 
-// export const toNoteStruct = (noteName, duration) => {
-//   const frequency = getNoteFrequency(noteName);
-//   const buffer = new ArrayBuffer(6);
-//   const view = new DataView(buffer);
-
-//   view.setUint16(0, frequency, false);
-//   view.setFloat32(2, duration, false);
-
-//   return buffer;
-// };
-
-// export const fromNoteStruct = (buffer) => {
-//   const view = new DataView(buffer);
-
-//   const frequency = view.getUint16(0, false);
-//   const duration = view.getFloat32(2, false);
-
-//   console.log(buffer);
-
-//   return [frequency, duration];
-// };
+export const toMs = (seconds) => Math.round(seconds * 1000);

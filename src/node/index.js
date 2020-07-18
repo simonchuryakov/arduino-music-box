@@ -15,15 +15,10 @@ const midiStoragePath = path.join(
   process.cwd(),
   process.env.MIDI_STORAGE_FOLDER
 );
-// The best ones
-// const fileName = "eminem-stan_mono.mid";
-// const fileName = "linkin_park-numb_mono.mid";
-// const fileName = "Sherlock_mono.mid";
+
 const fileName = "Mario_Bros_mono.mid";
 
-// const fileName = "jingle_bells_mono.mid";
 const proxy = new SerialProxy();
-
 const midiData = parse(path.join(midiStoragePath, fileName));
 
 proxy.init(serialPort, serialOptions, (error) => {
