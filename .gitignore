@@ -17,3 +17,6 @@ node_modules/
 .env.test
 
 .vscode
+
+# meta info for mid file
+midi-storage/*.json
