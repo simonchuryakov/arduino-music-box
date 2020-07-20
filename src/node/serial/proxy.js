@@ -1,8 +1,9 @@
 import SerialPort from "serialport";
+import moment from "moment";
 
 export class SerialProxy {
-  init(port, options, errorFn) {
-    this.port = new SerialPort(port, options, errorFn);
+  init(port, options, openCallback) {
+    this.port = new SerialPort(port, options, openCallback);
   }
 
   isOpen() {
@@ -15,6 +16,8 @@ export class SerialProxy {
 
   write(data) {
     if (this.port) {
+      console.log(`${moment().format("DD/MM/YY HH:mm:ss.ms")}: ${data}`);
+
       this.port.write(data);
     }
   }

@@ -12,7 +12,6 @@ import {
 
 const SEPARATOR = ",";
 const NOTE_SEPARATOR = ";";
-const NOTES_CHUNK_SIZE = 5;
 const MIN_NOTE_NAME_LENGTH = 2;
 const MIDI_META_FILE_EXTENSION = ".json";
 
@@ -79,15 +78,20 @@ export const parse = (
     );
   }
 
-  return _chunk(notes, NOTES_CHUNK_SIZE).map((notes) =>
-    notes.reduce(
-      (notesFrame, [frequency, duration]) => {
-        notesFrame.data += `${frequency}${SEPARATOR}${duration}${NOTE_SEPARATOR}`;
-        notesFrame.wait += duration;
+  let melodyDuration = 0;
+  const melody = notes.reduce((melody, [frequency, duration]) => {
+    melody.push({
+      data: `${frequency}${SEPARATOR}${duration}${NOTE_SEPARATOR}`,
+      wait: duration,
+    });
 
-        return notesFrame;
-      },
-      { wait: 0, data: "" }
-    )
-  );
+    melodyDuration += duration;
+
+    return melody;
+  }, []);
+
+  return {
+    melody,
+    duration: melodyDuration,
+  };
 };

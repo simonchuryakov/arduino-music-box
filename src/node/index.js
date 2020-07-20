@@ -16,24 +16,36 @@ const midiStoragePath = path.join(
   process.env.MIDI_STORAGE_FOLDER
 );
 
-const fileName = "Mario_Bros_mono.mid";
-
 const proxy = new SerialProxy();
-const midiData = parse(path.join(midiStoragePath, fileName));
+const playList = ["Nokia_tune.mid", "korzh.mid"];
 
-proxy.init(serialPort, serialOptions, (error) => {
-  if (error) {
-    console.log("Error: ", error.message);
-  }
-});
-
-if (!proxy.isOpen()) {
+const playMelody = (melody) => {
   let shouldWait = 0;
 
-  midiData.forEach((data) => {
+  melody.forEach((data) => {
     setTimeout(() => {
       proxy.write(data.data);
     }, shouldWait);
     shouldWait += data.wait;
   });
-}
+};
+
+const startPlaylist = (tracks) => {
+  let shouldWait = 0;
+
+  tracks.forEach((fileName) => {
+    const track = parse(path.join(midiStoragePath, fileName));
+
+    setTimeout(() => playMelody(track.melody), shouldWait);
+    shouldWait += track.duration;
+  });
+};
+
+proxy.init(serialPort, serialOptions, (error) => {
+  if (error) {
+    console.log("Error: ", error.message);
+  }
+
+  // Need to wait a bit, otherwise a few first notes are gone
+  setTimeout(() => startPlaylist(playList), 100);
+});
