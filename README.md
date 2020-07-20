@@ -13,9 +13,9 @@ MIDI_STORAGE_FOLDER=<MIDI_STORAGE_FOLDER>
 ```
 
 2. Electronics:
-   1. Arduino Uno
-   2. Piezo buzzer
-   3. Wires
+   - Arduino Uno
+   - Piezo buzzer
+   - Wires
 3. Circuit scheme
    ![Circuit scheme](https://github.com/simonchuryakov/arduino-music-box/blob/master/docs/circuit.jpg?raw=true)
 
@@ -32,4 +32,4 @@ npm install
 node src/node/index.js
 ```
 
-3. By default it will play the file `midi-storage/Mario_Bros_mono.mid` (you can change it in the `index.js`)
+1. By default it will start playing files from `midi-storage` (you can change it in the `index.js`)
