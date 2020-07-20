@@ -26,6 +26,9 @@ const noteToIdxDictionary = new Map([
   ["B", 11],
 ]);
 
+const DEFAULT_BPM = 120; // beats per minute
+const MINUTE = 60000;
+
 // Note name format is C#4 or D3
 export const getFrequencyByNote = (noteName) => {
   const name = noteName.replace(/[0-9]/, "");
@@ -35,4 +38,15 @@ export const getFrequencyByNote = (noteName) => {
   return OCTAVES[octaveIdx][noteIdx];
 };
 
-export const toMs = (seconds) => Math.round(seconds * 1000);
+export const getPPQ = (header) => header.ppq;
+
+export const getBPM = (header) => {
+  try {
+    return header.tempos[0].bpm;
+  } catch {
+    return DEFAULT_BPM;
+  }
+};
+
+export const getConvertTicksToMsFn = (bpm, ppq) => (ticks) =>
+  ticks * Math.round(MINUTE / (bpm * ppq));

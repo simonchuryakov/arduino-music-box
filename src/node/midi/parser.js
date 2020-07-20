@@ -3,7 +3,12 @@ import Midi from "@tonejs/midi";
 import _groupBy from "lodash/groupBy.js";
 import _chunk from "lodash/chunk.js";
 
-import { getFrequencyByNote, toMs } from "./helper.js";
+import {
+  getFrequencyByNote,
+  getConvertTicksToMsFn,
+  getPPQ,
+  getBPM,
+} from "./helper.js";
 
 const SEPARATOR = ",";
 const NOTE_SEPARATOR = ";";
@@ -11,16 +16,16 @@ const NOTES_CHUNK_SIZE = 5;
 const MIN_NOTE_NAME_LENGTH = 2;
 const MIDI_META_FILE_EXTENSION = ".json";
 
-const toNotes = (track) => {
-  const mainThemeNotes = Object.values(_groupBy(track.notes, "time")).map(
+const toNotes = (track, toMs) => {
+  const mainThemeNotes = Object.values(_groupBy(track.notes, "ticks")).map(
     (notes) => notes[0]
   );
 
-  let previousTime = 0;
-  let previousNoteDuration = 0;
+  let previousTicks = 0;
+  let previousDurationTicks = 0;
 
   return mainThemeNotes.reduce(
-    (melody, { pitch, octave, duration, name, time }, idx) => {
+    (melody, { pitch, octave, name, ticks, durationTicks }, idx) => {
       let compoundName = "";
 
       if (pitch !== undefined && octave !== undefined) {
@@ -36,16 +41,16 @@ const toNotes = (track) => {
       }
 
       // Push the pause in the melody if needed
-      if (previousTime + previousNoteDuration < time) {
-        melody.push([-1, toMs(time - previousTime - previousNoteDuration)]);
+      if (previousTicks + previousDurationTicks < ticks) {
+        melody.push([-1, toMs(ticks - previousTicks - previousDurationTicks)]);
       }
 
       const frequency = getFrequencyByNote(compoundName);
-      const durationMs = toMs(duration);
+      const durationMs = toMs(durationTicks);
 
       melody.push([frequency, durationMs]);
-      previousTime = time;
-      previousNoteDuration = duration;
+      previousTicks = ticks;
+      previousDurationTicks = durationTicks;
 
       return melody;
     },
@@ -60,7 +65,12 @@ export const parse = (
 ) => {
   const midiData = fs.readFileSync(midiFilePath);
   const midi = new Midi.Midi(midiData);
-  const notes = toNotes(midi.tracks[mainTrackIdx]);
+
+  const ppq = getPPQ(midi.header);
+  const bpm = getBPM(midi.header);
+  const toMs = getConvertTicksToMsFn(ppq, bpm);
+
+  const notes = toNotes(midi.tracks[mainTrackIdx], toMs);
 
   if (shouldGenerateMetaFile) {
     fs.writeFileSync(
