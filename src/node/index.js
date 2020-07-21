@@ -30,7 +30,7 @@ const playMelody = (melody) => {
   });
 };
 
-const startPlaylist = (tracks) => {
+const start = (tracks) => {
   let shouldWait = 0;
 
   tracks.forEach((fileName) => {
@@ -47,5 +47,5 @@ proxy.init(serialPort, serialOptions, (error) => {
   }
 
   // Need to wait a bit, otherwise a few first notes are gone
-  setTimeout(() => startPlaylist(playList), 100);
+  setTimeout(() => start(playList), 100);
 });

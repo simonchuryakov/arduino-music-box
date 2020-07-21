@@ -1,3 +1,5 @@
+import moment from "moment";
+
 // lines - octave idx, columns - frequency for concrete note
 const OCTAVES = [
   [16, 17, 18, 19, 21, 22, 23, 25, 26, 28, 29, 31],
@@ -27,7 +29,6 @@ const noteToIdxDictionary = new Map([
 ]);
 
 const DEFAULT_BPM = 120; // beats per minute
-const MINUTE = 60000;
 
 // Note name format is C#4 or D3
 export const getFrequencyByNote = (noteName) => {
@@ -48,5 +49,5 @@ export const getBPM = (header) => {
   }
 };
 
-export const getConvertTicksToMsFn = (bpm, ppq) => (ticks) =>
-  ticks * Math.round(MINUTE / (bpm * ppq));
+export const getTicksToMsFn = (bpm, ppq) => (ticks) =>
+  ticks * Math.round(moment.duration(1, "minute") / (bpm * ppq));

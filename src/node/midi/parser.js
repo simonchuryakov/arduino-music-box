@@ -1,11 +1,11 @@
 import fs from "fs";
-import Midi from "@tonejs/midi";
+import midi from "@tonejs/midi";
 import _groupBy from "lodash/groupBy.js";
 import _chunk from "lodash/chunk.js";
 
 import {
   getFrequencyByNote,
-  getConvertTicksToMsFn,
+  getTicksToMsFn,
   getPPQ,
   getBPM,
 } from "./helper.js";
@@ -60,21 +60,21 @@ const toNotes = (track, toMs) => {
 export const parse = (
   midiFilePath,
   mainTrackIdx = 0,
-  shouldGenerateMetaFile = false
+  shouldGenerateMetaJson = false
 ) => {
-  const midiData = fs.readFileSync(midiFilePath);
-  const midi = new Midi.Midi(midiData);
+  const binaryData = fs.readFileSync(midiFilePath);
+  const data = new midi.Midi(binaryData);
 
-  const ppq = getPPQ(midi.header);
-  const bpm = getBPM(midi.header);
-  const toMs = getConvertTicksToMsFn(ppq, bpm);
+  const ppq = getPPQ(data.header);
+  const bpm = getBPM(data.header);
+  const toMs = getTicksToMsFn(ppq, bpm);
 
-  const notes = toNotes(midi.tracks[mainTrackIdx], toMs);
+  const notes = toNotes(data.tracks[mainTrackIdx], toMs);
 
-  if (shouldGenerateMetaFile) {
+  if (shouldGenerateMetaJson) {
     fs.writeFileSync(
       `${midiFilePath}${MIDI_META_FILE_EXTENSION}`,
-      JSON.stringify(midi)
+      JSON.stringify(data)
     );
   }
 
