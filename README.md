@@ -32,4 +32,4 @@ npm install
 node src/node/index.js
 ```
 
-1. By default it will start playing files from `midi-storage` (you can change it in the `index.js`)
+By default it will start playing files from `midi-storage` (you can change it in the `index.js`)
