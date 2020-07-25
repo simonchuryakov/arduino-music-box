@@ -1,4 +1,5 @@
 #define BUZZER_PIN 13
+#define GROUND_PIN 9
 #define SEPARATOR ','
 #define END_OF_NOTE ';'
 
@@ -6,10 +7,15 @@ void setup()
 {
     Serial.begin(9600);
     pinMode(BUZZER_PIN, OUTPUT);
+    // Required for circle_v2
+    pinMode(GROUND_PIN, OUTPUT);
 }
 
 void loop()
 {
+    // Required for circle_v2
+    digitalWrite(GROUND_PIN, LOW);
+
     if (Serial.available() > 0)
     {
         playNote();

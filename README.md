@@ -17,7 +17,9 @@ MIDI_STORAGE_FOLDER=<MIDI_STORAGE_FOLDER>
    - Piezo buzzer
    - Wires
 3. Circuit scheme
-   ![Circuit scheme](https://github.com/simonchuryakov/arduino-music-box/blob/master/docs/circuit.jpg?raw=true)
+   ![Circuit scheme](https://github.com/simonchuryakov/arduino-music-box/blob/master/docs/circuit_v1.jpg?raw=true)
+   or
+   ![Circuit scheme](https://github.com/simonchuryakov/arduino-music-box/blob/master/docs/circuit_v2.jpg?raw=true)
 
 ## How to run
 

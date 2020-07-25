@@ -17,7 +17,7 @@ const midiStoragePath = path.join(
 );
 
 const proxy = new SerialProxy();
-const playList = ["Harry_Potter_mono.mid", "Nokia_tune.mid"];
+const playList = ["maliy_povsroslel.mid"];
 
 const playMelody = (melody) => {
   let shouldWait = 0;
