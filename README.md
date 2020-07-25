@@ -15,7 +15,7 @@ MIDI_STORAGE_FOLDER=<MIDI_STORAGE_FOLDER>
 2. Electronics:
    - Arduino Uno
    - Piezo buzzer
-   - Wires
+   - Wires (optional)
 3. Circuit scheme
    1. v1 - https://github.com/simonchuryakov/arduino-music-box/blob/master/docs/circuit_v1.jpg
    2. v2 - https://github.com/simonchuryakov/arduino-music-box/blob/master/docs/circuit_v2.jpg
