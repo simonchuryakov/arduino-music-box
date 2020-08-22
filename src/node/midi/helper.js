@@ -1,6 +1,6 @@
 import moment from "moment";
 
-// lines - octave idx, columns - frequency for concrete note
+// lines - octave idx, columns - frequency for the particular note
 const OCTAVES = [
   [16, 17, 18, 19, 21, 22, 23, 25, 26, 28, 29, 31],
   [33, 35, 37, 39, 41, 44, 46, 49, 52, 55, 58, 62],

@@ -7,13 +7,13 @@ void setup()
 {
     Serial.begin(9600);
     pinMode(BUZZER_PIN, OUTPUT);
-    // Required for circle_v2
+    // Required for circle_v2 only
     pinMode(GROUND_PIN, OUTPUT);
 }
 
 void loop()
 {
-    // Required for circle_v2
+    // Required for circle_v2 only
     digitalWrite(GROUND_PIN, LOW);
 
     if (Serial.available() > 0)
