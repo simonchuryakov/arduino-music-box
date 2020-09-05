@@ -44,6 +44,8 @@ const start = (tracks) => {
 proxy.init(serialPort, serialOptions, (error) => {
   if (error) {
     console.log("Error: ", error.message);
+
+    return;
   }
 
   // Need to wait a bit, otherwise a few first notes are gone
