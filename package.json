@@ -19,7 +19,7 @@
   "homepage": "https://github.com/simonchuryakov/arduino-music-box#readme",
   "dependencies": {
     "@tonejs/midi": "2.0.23",
-    "lodash": "4.17.19",
+    "lodash": "4.17.21",
     "moment": "2.27.0",
     "serialport": "9.0.0"
   },
